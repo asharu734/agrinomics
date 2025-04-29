@@ -1,3 +1,5 @@
+//kasama dapat ito sa pag compile both sa server and client
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,4 +36,8 @@ void destroy_cardStruct_array(cardStruct *array, int count) {
         free(array[i].description);
     }
     free(array);
+}
+
+void insert_card_data(cardStruct *array, int count){
+    printf("I'll figure it out once nagawa na yung file reading");
 }
