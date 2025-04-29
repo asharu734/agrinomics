@@ -6,9 +6,12 @@ void alertOfSuccess()
     printf("economy.h: Yippies!\n");
 }
 
-int calculateRatioFromSupplyAndDemand(int supply, int demand)
+float calculateRatioFromSupplyAndDemand(int supply, int demand)
 {
-    int priceRatio = supply / demand;
+    if (demand == 0.0)
+        return 0.0;
+
+    float priceRatio = (float)demand / (float)supply;
 
     return priceRatio;
 }
