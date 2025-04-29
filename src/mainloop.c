@@ -18,7 +18,7 @@ int main()
     alertOfSuccess();
 
     Crop testCrop;
-    initCrop(&testCrop, "Potato", 30, 20, 20);
+    initCrop(&testCrop, "Potato", 30);
     printf("%s\n%d\n", getCropName(&testCrop), getCropBasePrice(&testCrop));
 
     printf("What in the goddamn?\n");
