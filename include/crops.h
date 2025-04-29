@@ -18,3 +18,8 @@ Crop initCrop(Crop* crop, char* name, int basePrice, int supply, int demand)
     crop->supply = supply;
     crop->demand = demand;
 }
+
+char* getCropName(Crop* crop)
+{
+    return crop->name;
+}
