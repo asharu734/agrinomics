@@ -1,0 +1,76 @@
+{
+  "start": {
+    "text": "You are at the farm. Its presence overlooks your house. A road leading to the marketplace snakes its way to the side.\n\nYou...\n",
+    "choices": [
+      { "option": "Take a look at the plot", "next": "look" },
+      { "option": "Visit the market", "next": "market" },
+      { "option": "Go to bed", "next": "sleep" }
+    ]
+  },
+
+    "look": {
+      "text": "You take a look at the plot. It's quite big. Impressive.\n\nYou...\n",
+      "choices": [
+        { "option": "Plant crops", "next": "plant" },
+        { "option": "Harvest crops", "next": "harvest" },
+        { "option": "Check crops", "next": "check" }
+      ]
+    },
+
+      "plant": {
+        "text": "Plant",
+        "choices": []
+      },
+      "harvest": {
+        "text": "Harvest",
+        "choices": []
+      },
+      "check": {
+        "text": "Check",
+        "choices": []
+      },
+  
+    "market": {
+      "text": "You visit the marketplace. It is filled with sellers and customers.",
+      "choices": [
+        { "option": "Buy seeds", "next": "buyseeds" },
+        { "option": "Buy equipment", "next": "buyequipment" },
+        { "option": "Sell crops", "next": "sell" }
+      ]
+    },
+    "market2": {
+      "text": "You go back to the familiar sight of sellers and customers. It hasn't changed since you last left.\n\nYou...\n",
+      "choices": [
+        { "option": "Buy seeds", "next": "buyseeds" },
+        { "option": "Buy equipment", "next": "buyequipment" },
+        { "option": "Sell crops", "next": "sell" }
+      ]
+    },
+
+      "buyseeds": {
+        "text": "You go to the seed section to buy seeds. There are a couple of options you can buy.\n\nYou...\n",
+        "choices": [
+          { "option": "Buy Seed1", "next": "buyseed1" },
+          { "option": "Go back", "next": "market2" }
+        ]
+      },
+
+        "buyseed1": {
+          "text": "You buy SEED1.\n\nYou...\n",
+          "choices": [
+            { "option": "Go back", "next": "market2" }
+          ]
+        },
+
+      "buyequipment": {
+        "text": "Equipment",
+        "choices": [
+          { "option": "Go back", "next": "market2" }
+        ]
+      },
+
+  "sleep": {
+    "text": "You fall asleep and never wake up. The end.",
+    "choices": []
+  }
+}
