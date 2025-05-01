@@ -48,17 +48,18 @@
     },
 
       "buyseeds": {
-        "text": "You go to the seed section to buy seeds. There are a couple of options you can buy.\n\nYou...\n",
+        "text": "You go to the seed section to buy seeds. There are a couple of options you can buy.\n",
+        "show_money": true,
         "choices": [
-          { "option": "Buy Seed1", "next": "buyseed1" },
+          { "option": "Buy Seed1", "price": 10, "action": "buy", "next": "buyseeds1" },
           { "option": "Go back", "next": "market2" }
         ]
       },
 
-        "buyseed1": {
-          "text": "You buy SEED1.\n\nYou...\n",
+        "buyseeds1": {
+          "text": "You buy SEED1.",
           "choices": [
-            { "option": "Go back", "next": "market2" }
+            { "option": "Go back", "next": "buyseeds" }
           ]
         },
 
