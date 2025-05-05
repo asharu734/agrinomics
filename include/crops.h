@@ -1,22 +1,31 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct Crop
 {
     char* name;
+    int growthTimeInDays;
     int basePrice;
-    int currentPrice;
+    int buyingPrice;
+    int sellingPrice;
     int supply;
     int demand;
 } 
 Crop;
 
-Crop initCrop(Crop* crop, char* name, int basePrice)
+Crop initCrop(char* name, int basePrice, int growthTimeInDays)
 {
-    crop->name = name;
-    crop->basePrice = basePrice;
-    crop->currentPrice = basePrice;
-    crop->supply = 0;
-    crop->demand = 0;
+    Crop crop;
+    crop.name = strdup(name);
+    crop.basePrice = basePrice;
+    crop.buyingPrice = 0.4 * basePrice;
+    crop.sellingPrice = basePrice;
+    crop.growthTimeInDays = growthTimeInDays;
+    crop.supply = 0;
+    crop.demand = 0;
+
+    return crop;
 }
 
 char* getCropName(Crop* crop)
@@ -29,11 +38,6 @@ int getCropBasePrice(Crop* crop)
     return crop->basePrice;
 }
 
-int getCropCurrentPrice(Crop* crop)
-{
-    return crop->currentPrice;
-}
-
 int getCropSupply(Crop* crop)
 {
     return crop->supply;
@@ -42,11 +46,6 @@ int getCropSupply(Crop* crop)
 int getCropDemand(Crop* crop)
 {
     return crop->demand;
-}
-
-void setCropCurrentPrice(Crop* crop, int newCropCurrentPrice)
-{
-    crop->currentPrice = newCropCurrentPrice;
 }
 
 void setCropSupply(Crop* crop, int newCropSupply)
