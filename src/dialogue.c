@@ -3,24 +3,30 @@
 #include <string.h>
 #include "cJSON.h"
 
-// Read the entire file into memory
+//Reads the entire file into memory
 char* read_file(const char* filename) {
     FILE* file = fopen(filename, "rb");
     if (!file) {
-        perror("Could not open file");
+        perror("Could not open file.");
         return NULL;
     }
     fseek(file, 0, SEEK_END);
     long filelength = ftell(file);
     rewind(file);
-    char* data = malloc(filelength + 1);
+
+    char* data = (char*)malloc(filelength + 1);
+    if (!data) {
+        fclose(file);
+        return NULL;
+    }
+
     fread(data, 1, filelength, file);
     data[filelength] = '\0';
     fclose(file);
     return data;
 }
 
-void run_dialogue(cJSON* root, const char* start_node, int* money) {
+char* run_dialogue(cJSON* root, const char* start_node, int* money) {
     const char* current_node_name = start_node;
 
     while (1) {
@@ -79,6 +85,7 @@ void run_dialogue(cJSON* root, const char* start_node, int* money) {
                 continue;
             }
         }
+
         //Goes to the "next" dialogue in the json.
         cJSON* next = cJSON_GetObjectItem(chosen, "next");
         if (cJSON_IsString(next)) {
@@ -86,24 +93,61 @@ void run_dialogue(cJSON* root, const char* start_node, int* money) {
         } else {
             break;
         }
+
+        //Handle "back"
+        if (action && strcmp(action->valuestring, "back") == 0) {
+            return "__BACK__";
+        }
     }
 }
-int main() {
-    char* file_content = read_file("../include/dialogue.json");
+
+void run_game(const char* filename){
+    //Money example. Just add a system for the money cause idk what's the plan for it.
+    int player_money = 20;
+    
+    char* file_content = read_file("filename");
+    //Lazy to fix return 1
     if (!file_content) return 1;
 
     cJSON* root = cJSON_Parse(file_content);
     if (!root) {
         printf("Error parsing JSON.\n");
         free(file_content);
-        return 1;
+        return 1; //Lazy to fix return 1 sequel
     }
-    //Money example. Just add a system for the money cause idk what's the plan for it.
-    int player_money = 20;
 
     run_dialogue(root, "start", &player_money);
 
     cJSON_Delete(root);
     free(file_content);
+}
+
+void eventCards(const char* filename){
+    const char* current_node = "start";
+
+    while (1) {
+        char* shop_content = read_file(filename);
+        if (!shop_content) break;
+
+        cJSON* shop_json = cJSON_Parse(shop_content);
+        if (!shop_json) {
+            printf("Failed to parse shop.json\n");
+            free(shop_content);
+            break;
+        }
+
+        char* result = run_dialogue(shop_json, "shop");
+        if (result && strcmp(result, "__BACK__") == 0) {
+            break;
+        }
+
+        cJSON_Delete(shop_json);
+        free(shop_content);
+        continue;
+    }
+}
+
+int main() {
+    run_game("../include/dialogue.json");
     return 0;
 }

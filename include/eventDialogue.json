@@ -1,0 +1,9 @@
+{
+  "card": {
+    "text": "This increases the heat, which slows down crop growth by a day.",
+    "choices": [
+      { "option": "Pick card", "next": "look" },
+      { "option": "Go back", "next": "back" }
+    ]
+  }
+}
