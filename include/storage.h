@@ -8,13 +8,13 @@
 #include "seeds.h"
 #include "crops.h"
 
-#define MAX 100
+#define MAX_SPACE 100
 
 typedef struct Storage
 {
-    Crop crops[MAX];
+    Crop crops[MAX_SPACE];
     int cropsInStorage;
-    Seed seeds[MAX];
+    Seed seeds[MAX_SPACE];
     int seedsInStorage;
 }
 Storage;
@@ -27,12 +27,12 @@ void initStorage(Storage* storage)
 
 int isCropsFull(Storage* storage)
 {
-    return storage->cropsInStorage == MAX;
+    return storage->cropsInStorage == MAX_SPACE;
 }
 
 int isSeedsFull(Storage* storage)
 {
-    return storage->seedsInStorage == MAX;
+    return storage->seedsInStorage == MAX_SPACE;
 }
 
 int addCropToStorage(Storage* storage, Crop crop)
