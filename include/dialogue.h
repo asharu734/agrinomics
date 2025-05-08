@@ -1,3 +1,6 @@
+#ifndef DIALOGUE_H
+#define DIALOGUE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -122,7 +125,8 @@ void run_game(const char* filename){
     free(file_content);
 }
 
-int main() {
-    run_game("../include/dialogue.json");
-    return 0;
-}
+//int main() {
+//    run_game("../include/dialogue.json");
+//    return 0;
+//}
+#endif
