@@ -1,3 +1,6 @@
+#ifndef CROPS_H
+#define CROPS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,3 +60,10 @@ void setCropDemand(Crop* crop, int newCropDemand)
 {
     crop->demand = newCropDemand;
 }
+
+void freeCrop(Crop* crop)
+{
+    free(crop->name);
+}
+
+#endif
