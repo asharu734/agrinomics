@@ -7,18 +7,30 @@
 #include <unistd.h>
 #include <time.h>
 
+typedef struct {
+    int id;
+    char name[256];
+    int count;
+} Card;
+
 #define DECK_SIZE 15
 #define PICK_SIZE 3
+#define CARD_TYPE_COUNT 1 //dagdag nalang to, ito yung kung ilan unique cards meron
+
+Card card_types[CARD_TYPE_COUNT] = {
+    {1, "Typhoon: Destroy Plots", 1},
+    //dito nalang ilalagay yung cards na naisip na
+};
 
 void die_with_error(char *error_msg){
     printf("%s", error_msg);
     exit(-1);
 }
 
-void shuffle(int *deck, int size) {
+void shuffle(Card *deck, int size) {
     for (int i = size - 1; i > 0; i--) {
         int j = rand() % (i + 1);
-        int temp = deck[i];
+        Card temp = deck[i];
         deck[i] = deck[j];
         deck[j] = temp;
     }
@@ -64,15 +76,19 @@ int main(int argc, char *argv[]){
     printf("Client succesfully connected ...\n");    
     
 
-    int deck[DECK_SIZE];
-    int used = 0;
+    Card deck[DECK_SIZE];
+    int index = 0;
 
     srand(time(NULL)); // Seed for randomness
 
     // Communicate    
     while(1){
-        for (int i = 0; i < DECK_SIZE; i++) {
-            deck[i] = i + 1;
+        for(int i = 0; i < CARD_TYPE_COUNT; i++){
+            for(int j = 0; j < card_types[i].count; j++){
+                deck[index].id = card_types[i].id;
+                strncpy(deck[index].name, card_types[i].name, sizeof(deck[index].name));
+                index++;
+            }
         }
         shuffle(deck, DECK_SIZE);
         
@@ -82,7 +98,7 @@ int main(int argc, char *argv[]){
             printf("\nYour options:\n");
         
             for (int j = 0; j < PICK_SIZE && (i + j) < DECK_SIZE; j++) {
-                printf("%d: Card #%d\n", j + 1, deck[i + j]);
+                printf("%d: %s\n", j + 1, deck[i + j].name);
             }
         
             int choice = 0;
@@ -91,8 +107,8 @@ int main(int argc, char *argv[]){
                 scanf("%d", &choice);
             }
         
-            int chosen = deck[i + choice - 1];
-            printf("You picked Card #%d!\n", chosen);
+            Card chosen = deck[i + choice - 1];
+            printf("You picked Card #%s!\n", chosen.name);
         
             // Send chosen card to the client
             char card_msg[256];
