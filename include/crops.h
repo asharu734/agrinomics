@@ -17,53 +17,20 @@ typedef struct Crop
 } 
 Crop;
 
-Crop initCrop(char* name, int basePrice, int growthTimeInDays)
-{
-    Crop crop;
-    crop.name = strdup(name);
-    crop.basePrice = basePrice;
-    crop.buyingPrice = 0.4 * basePrice;
-    crop.sellingPrice = basePrice;
-    crop.growthTimeInDays = growthTimeInDays;
-    crop.supply = 0;
-    crop.demand = 0;
+Crop initCrop(char* name, int basePrice, int growthTimeInDays);
 
-    return crop;
-}
+char* getCropName(Crop* crop);
 
-char* getCropName(Crop* crop)
-{
-    return crop->name;
-}
+int getCropBasePrice(Crop* crop);
 
-int getCropBasePrice(Crop* crop)
-{
-    return crop->basePrice;
-}
+int getCropSupply(Crop* crop);
 
-int getCropSupply(Crop* crop)
-{
-    return crop->supply;
-}
+int getCropDemand(Crop* crop);
 
-int getCropDemand(Crop* crop)
-{
-    return crop->demand;
-}
+void setCropSupply(Crop* crop, int newCropSupply);
 
-void setCropSupply(Crop* crop, int newCropSupply)
-{
-    crop->supply = newCropSupply;
-}
+void setCropDemand(Crop* crop, int newCropDemand);
 
-void setCropDemand(Crop* crop, int newCropDemand)
-{
-    crop->demand = newCropDemand;
-}
-
-void freeCrop(Crop* crop)
-{
-    free(crop->name);
-}
+void freeCrop(Crop* crop);
 
 #endif
