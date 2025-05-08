@@ -1,3 +1,6 @@
+#ifndef DIALOGUE_H
+#define DIALOGUE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -122,32 +125,8 @@ void run_game(const char* filename){
     free(file_content);
 }
 
-void eventCards(const char* filename){
-    const char* current_node = "start";
-
-    while (1) {
-        char* shop_content = read_file(filename);
-        if (!shop_content) break;
-
-        cJSON* shop_json = cJSON_Parse(shop_content);
-        if (!shop_json) {
-            printf("Failed to parse shop.json\n");
-            free(shop_content);
-            break;
-        }
-
-        char* result = run_dialogue(shop_json, "shop");
-        if (result && strcmp(result, "__BACK__") == 0) {
-            break;
-        }
-
-        cJSON_Delete(shop_json);
-        free(shop_content);
-        continue;
-    }
-}
-
-int main() {
-    run_game("../include/dialogue.json");
-    return 0;
-}
+//int main() {
+//    run_game("../include/dialogue.json");
+//    return 0;
+//}
+#endif

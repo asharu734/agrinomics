@@ -12,6 +12,11 @@ void die_with_error(char *error_msg){
     exit(-1);
 }
 
+void evaluate_and_execute(int id) {
+    //lagay ng if statements
+}
+
+
 int main(int argc,  char *argv[]){
     
     int client_sock,  port_no,  n;
@@ -60,6 +65,9 @@ int main(int argc,  char *argv[]){
         if (n < 0)
             die_with_error("Error: recv() Failed (Chosen Card)");
         printf("[server] > %s", buffer);
+
+        int received_id = atoi(buffer);
+        evaluate_and_execute(received_id);
         
         // Respond back to server
         char response[256];
