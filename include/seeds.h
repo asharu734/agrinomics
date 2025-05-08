@@ -1,3 +1,6 @@
+#ifndef SEED_H
+#define SEED_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,3 +25,30 @@ Seed initSeed(char* name, int basePrice, int daysBeforeHarvest,
 
     return seed;
 }
+
+char* getSeedName(Seed* seed)
+{
+    return seed->name;
+}
+
+int getSeedBasePrice(Seed* seed)
+{
+    return seed->basePrice;
+}
+
+int getSeedDaysBeforeHarvest(Seed* seed)
+{
+    return seed->daysBeforeHarvest;
+}
+
+int getSeedHarvestAmount(Seed* seed)
+{
+    return seed->baseHarvestAmount;
+}
+
+void freeSeed(Seed* seed)
+{
+    free(seed->name);
+}
+
+#endif
