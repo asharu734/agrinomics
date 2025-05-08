@@ -83,6 +83,13 @@ int main(int argc, char *argv[]){
 
     // Communicate    
     while(1){
+        bzero(buffer, 256);
+        n = recv(client_sock, buffer, 255, 0);
+        if(n < 0){
+            die_with_error("Error: recv() Failed");
+        }
+
+        printf("%s", buffer);
         for(int i = 0; i < CARD_TYPE_COUNT; i++){
             for(int j = 0; j < card_types[i].count; j++){
                 deck[index].id = card_types[i].id;
@@ -112,7 +119,7 @@ int main(int argc, char *argv[]){
         
             // Send chosen card to the client
             char card_msg[256];
-            snprintf(card_msg, sizeof(card_msg), "Chosen Card: #%d\n", chosen);
+            snprintf(card_msg, sizeof(card_msg), "Chosen Card: #%d\n", chosen.id);
             n = send(client_sock, card_msg, strlen(card_msg), 0);
             if (n < 0) 
                 die_with_error("Error: send() Failed (card_msg).");
