@@ -1,3 +1,5 @@
+//compile instructions: gcc -o server server.c cJSON.c -lcjson
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,14 +8,15 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <time.h>
+#include "../include/cJSON.h"
 
 typedef struct {
     int id;
-    char name[256];
+    char name[512];
     int count;
 } Card;
 
-#define DECK_SIZE 15
+#define DECK_SIZE 12
 #define PICK_SIZE 3
 #define CARD_TYPE_COUNT 6 //dagdag nalang to, ito yung kung ilan unique cards meron
 
@@ -94,7 +97,54 @@ int main(int argc, char *argv[]){
             die_with_error("Error: recv() Failed");
         }
 
-        printf("%s", buffer);
+        // Parse the received JSON data
+        cJSON* game_data = cJSON_Parse(buffer);
+        if (game_data) {
+            // Safely check and extract the "money" field
+            cJSON* money_item = cJSON_GetObjectItem(game_data, "money");
+            if (money_item && cJSON_IsNumber(money_item)) {
+                int money = money_item->valueint;
+                printf("Player has %d coins\n", money);
+            } else {
+                printf("Money data is missing or invalid.\n");
+            }
+
+            // Similarly extract other game state values with safety checks
+            cJSON* seed_price_item = cJSON_GetObjectItem(game_data, "seed_price");
+            if (seed_price_item && cJSON_IsNumber(seed_price_item)) {
+                int seed_price = seed_price_item->valueint;
+                printf("Seed price is %d\n", seed_price);
+            } else {
+                printf("Seed price data is missing or invalid.\n");
+            }
+
+            cJSON* crop_price_item = cJSON_GetObjectItem(game_data, "crop_price");
+            if (crop_price_item && cJSON_IsNumber(crop_price_item)) {
+                int crop_price = crop_price_item->valueint;
+                printf("Crop price is %d\n", crop_price);
+            } else {
+                printf("Crop price data is missing or invalid.\n");
+            }
+
+            cJSON* plots_owned_item = cJSON_GetObjectItem(game_data, "plots_owned");
+            if (plots_owned_item && cJSON_IsNumber(plots_owned_item)) {
+                int plots_owned = plots_owned_item->valueint;
+                printf("Player owns %d plots\n", plots_owned);
+            } else {
+                printf("Plots owned data is missing or invalid.\n");
+            }
+
+            // Clean up after parsing
+            cJSON_Delete(game_data);
+        } else {
+            // Error handling if the JSON is invalid
+            printf("Error parsing JSON data.\n");
+        }
+
+
+        //
+        //Server interface process
+        //
         for(int i = 0; i < CARD_TYPE_COUNT; i++){
             for(int j = 0; j < card_types[i].count; j++){
                 deck[index].id = card_types[i].id;
@@ -120,7 +170,7 @@ int main(int argc, char *argv[]){
             }
         
             Card chosen = deck[i + choice - 1];
-            printf("You picked Card #%s!\n", chosen.name);
+            printf("You picked Card %s!\n", chosen.name);
         
             // Send chosen card to the client
             char card_msg[256];
@@ -128,6 +178,20 @@ int main(int argc, char *argv[]){
             n = send(client_sock, card_msg, strlen(card_msg), 0);
             if (n < 0) 
                 die_with_error("Error: send() Failed (card_msg).");
+
+                bzero(buffer, 256);
+            n = recv(client_sock, buffer, 255, 0);
+            if (n < 0) {
+                die_with_error("Error: recv() Failed (waiting for TURN_END)");
+            }
+
+            buffer[n] = '\0'; // Ensure null-terminated string
+
+            if (strncmp(buffer, "TURN_END", 8) == 0) {
+                printf("Client ended turn. Proceeding...\n");
+            } else {
+                printf("Unexpected message while waiting for TURN_END: %s\n", buffer);
+            }
         }        
     } 
 
