@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "include/seeds.h"
+#include "seeds.h"
 
 Seed initSeed(char* name, int basePrice, int daysBeforeHarvest)
 {

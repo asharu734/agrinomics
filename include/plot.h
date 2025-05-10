@@ -11,15 +11,19 @@
 
 typedef struct Plot
 {
-    Seed growingSeed;
+    Seed* growingSeed;
     int daysSincePlanted;
     int isReadyForHarvest;
 }
 Plot;
 
-Plot initPlot(Seed growingSeed);
+void initPlot(Plot* plot);
+
+void plantSeed(Plot* plot, Seed* plantedSeed);
 
 void simulateGrowth(Plot* plot);
+
+int checkIfReadyForHarvest(Plot* plot);
 
 int harvestCrops(Plot* plot);
 

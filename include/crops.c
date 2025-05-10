@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/crops.h"
+#include "crops.h"
 
 Crop initCrop(char* name, int basePrice)
 {
