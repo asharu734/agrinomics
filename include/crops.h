@@ -8,16 +8,14 @@
 typedef struct Crop
 {
     char* name;
-    int growthTimeInDays;
     int basePrice;
-    int buyingPrice;
     int sellingPrice;
     int supply;
     int demand;
 } 
 Crop;
 
-Crop initCrop(char* name, int basePrice, int growthTimeInDays);
+Crop initCrop(char* name, int basePrice);
 
 char* getCropName(Crop* crop);
 
@@ -30,6 +28,8 @@ int getCropDemand(Crop* crop);
 void setCropSupply(Crop* crop, int newCropSupply);
 
 void setCropDemand(Crop* crop, int newCropDemand);
+
+void setCropSellingPrice(Crop* crop, int newCropSellingPrice);
 
 void freeCrop(Crop* crop);
 
