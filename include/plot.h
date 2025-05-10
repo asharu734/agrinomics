@@ -17,4 +17,10 @@ typedef struct Plot
 }
 Plot;
 
+Plot initPlot(Seed growingSeed);
+
+void simulateGrowth(Plot* plot);
+
+int harvestCrops(Plot* plot);
+
 #endif
