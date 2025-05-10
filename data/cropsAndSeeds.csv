@@ -1,0 +1,4 @@
+name,basePrice,daysBeforeHarvest,baseHarvestAmount
+Wheat,8,4,4
+Corn,12,7,5
+Potato,9,5,3
