@@ -4,14 +4,12 @@
 
 #include "../include/crops.h"
 
-Crop initCrop(char* name, int basePrice, int growthTimeInDays)
+Crop initCrop(char* name, int basePrice)
 {
     Crop crop;
     crop.name = strdup(name);
     crop.basePrice = basePrice;
-    crop.buyingPrice = 0.4 * basePrice;
     crop.sellingPrice = basePrice;
-    crop.growthTimeInDays = growthTimeInDays;
     crop.supply = 0;
     crop.demand = 0;
 
@@ -46,6 +44,11 @@ void setCropSupply(Crop* crop, int newCropSupply)
 void setCropDemand(Crop* crop, int newCropDemand)
 {
     crop->demand = newCropDemand;
+}
+
+void setCropSellingPrice(Crop* crop, int newCropSellingPrice)
+{
+    crop->sellingPrice = newCropSellingPrice;
 }
 
 void freeCrop(Crop* crop)
