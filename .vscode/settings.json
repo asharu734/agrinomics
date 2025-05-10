@@ -2,6 +2,8 @@
     "files.associations": {
         "stdio.h": "c",
         "economy.h": "c",
-        "cjson.h": "c"
+        "cjson.h": "c",
+        "time.h": "c",
+        "dialogue.h": "c"
     }
 }

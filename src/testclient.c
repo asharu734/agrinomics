@@ -1,3 +1,6 @@
+//compile instructions: gcc -o client testclient.c ../include/dialogue.c cJSON.c -Iinclude
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,6 +9,8 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
+#include "../include/dialogue.h"
+
 
 void die_with_error(char *error_msg){
     printf("%s", error_msg);
@@ -60,6 +65,14 @@ int main(int argc,  char *argv[]){
 
     // Communicate
     while(1){
+        GameState state = run_game("../include/dialogue.json");
+        char* json_data = serialize_game_state(state);
+
+        n = send(client_sock, json_data, strlen(json_data), 0);
+        free(json_data);
+        if (n < 0)
+            die_with_error("Error: send() Failed (game data)");
+
         bzero(buffer, 256);
         n = recv(client_sock, buffer, 255, 0);
         if (n < 0)
@@ -68,13 +81,6 @@ int main(int argc,  char *argv[]){
 
         int received_id = atoi(buffer);
         evaluate_and_execute(received_id);
-        
-        // Respond back to server
-        char response[256];
-        snprintf(response, sizeof(response), "Noted: %s", buffer);
-        n = send(client_sock, response, strlen(response), 0);
-        if (n < 0)
-            die_with_error("Error: send() Failed (card response)");
     }
     
 
