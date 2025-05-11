@@ -51,7 +51,7 @@ int checkIfReadyForHarvest(Plot* plot)
     return 0;
 }
 
-int harvestCrops(Plot* plot, Crop* cropsList)
+int harvestCrops(Plot* plot, Crop* cropsList, size_t cropsListSize)
 {
     if (!checkIfReadyForHarvest(plot))
     {
@@ -62,7 +62,8 @@ int harvestCrops(Plot* plot, Crop* cropsList)
 
     int income = 0;
     char* seedName = getSeedName(plot->growingSeed);
-    size_t cropsListSize = sizeof(cropsList) / sizeof(cropsList[0]);
+    // size_t cropsListSize = sizeof(cropsList) / sizeof(cropsList[0]);
+    // This is unpossible
 
     for (int i = 0; i < cropsListSize; i++)
     {
