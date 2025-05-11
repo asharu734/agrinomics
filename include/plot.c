@@ -32,7 +32,8 @@ void simulateGrowth(Plot* plot)
     if (plot->growingSeed == NULL)
         return;
 
-    plot->daysSincePlanted++; // setter
+    plot->daysSincePlanted++;
+    checkIfReadyForHarvest(plot);
 }
 
 int checkIfReadyForHarvest(Plot* plot)
@@ -48,4 +49,38 @@ int checkIfReadyForHarvest(Plot* plot)
     }
 
     return 0;
+}
+
+int harvestCrops(Plot* plot, Crop* cropsList)
+{
+    if (!checkIfReadyForHarvest(plot))
+    {
+        printf("Not ready.\n");
+
+        return 0;
+    }
+
+    int income = 0;
+    char* seedName = getSeedName(plot->growingSeed);
+    size_t cropsListSize = sizeof(cropsList) / sizeof(cropsList[0]);
+
+    for (int i = 0; i < cropsListSize; i++)
+    {
+        if (strcmp(cropsList[i].name, seedName) == 0)
+        {
+            income = cropsList[i].sellingPrice * 30; 
+            // 30 can be changed to the harvest amount but idk
+            break;
+        }
+    }
+
+    // Initalize a temporary crop, put releveant crop 
+    // data based on similar seed name
+    // then return the current price of that crop * 30
+
+    initPlot(plot);
+
+    printf("Successful harvest!\n");
+
+    return income;
 }
