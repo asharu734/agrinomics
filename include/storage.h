@@ -1,3 +1,5 @@
+// DEPRECEATED!! DON'T USE THIS SHIT!!
+
 #ifndef STORAGE_H
 #define STORAGE_H
 

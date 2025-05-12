@@ -4,6 +4,10 @@
         "economy.h": "c",
         "cjson.h": "c",
         "time.h": "c",
-        "dialogue.h": "c"
+        "dialogue.h": "c",
+        "plot.h": "c",
+        "seeds.h": "c",
+        "crops.h": "c",
+        "storage.h": "c"
     }
 }

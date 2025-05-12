@@ -1,3 +1,6 @@
+#ifndef ECONOMY_C
+#define ECONOMY_C
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -33,3 +36,17 @@ void updateCropSellingPrice(Crop* crop)
 
     crop->sellingPrice = newSellingPrice;
 }
+
+void buySeed(Seed* seed, int* playerMoney)
+{
+    printf("Bought %s for %d Gendabloons\n", seed->name, seed->basePrice);
+    *playerMoney -= seed->basePrice;
+}
+
+void addToPlayerMoney(int* playerMoney, int amount)
+{
+    *playerMoney += amount;
+    printf("Earned %d Gendabloons.\n", amount);
+}
+
+#endif

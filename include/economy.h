@@ -16,4 +16,8 @@ void randomizeCropSupplyAndDemand(Crop* crop);
 // Will be used in Crop array
 void updateCropSellingPrice(Crop* crop);
 
+void buySeed(Seed* seed, int* playerMoney);
+
+void addToPlayerMoney(int* playerMoney, int amount);
+
 #endif

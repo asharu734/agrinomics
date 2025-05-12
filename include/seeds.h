@@ -14,8 +14,7 @@ typedef struct Seed
 }
 Seed;                        
 
-Seed initSeed(char* name, int basePrice, int daysBeforeHarvest,
-              int baseHarvestAmount);
+Seed initSeed(char* name, int basePrice, int daysBeforeHarvest);
 
 char* getSeedName(Seed* seed);
 

@@ -9,16 +9,9 @@
 
 // Will integrate into client later.
 
-void printTitleScreen()
-{
-    printf("Hello, world!\n");
-}
-
 int main()
 {
     // Tests
-    printTitleScreen();
-    alertOfSuccess();
 
     FILE *file = fopen("../data/crops.csv", "r");
     if (file == NULL)
@@ -27,7 +20,7 @@ int main()
         return EXIT_FAILURE;
     }
 
-    Crop potato = initCrop("Potato", 6, 4);
+    Crop potato = initCrop("Potato", 6);
     printf("%s\n%d\n", getCropName(&potato), getCropBasePrice(&potato));
 
     printf("What in the goddamn?\n");

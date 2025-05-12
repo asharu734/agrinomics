@@ -5,7 +5,10 @@
 
 #include "seeds.h"
 #include "crops.h"
+#include "economy.h"
 #include "plot.h"
+
+#include "economy.c"
 
 void initPlot(Plot* plot)
 {
@@ -14,13 +17,15 @@ void initPlot(Plot* plot)
     plot->isReadyForHarvest = 0;
 }
 
-void plantSeed(Plot* plot, Seed* plantedSeed)
+void plantSeed(Plot* plot, Seed* plantedSeed, int* playerMoney)
 {
     if (plot->growingSeed != NULL)
     {
         printf("This plot has something in it.\n");
         return;
     }
+
+    buySeed(plantedSeed, playerMoney);
 
     plot->growingSeed = plantedSeed;
     plot->daysSincePlanted = 0;
@@ -34,6 +39,8 @@ void simulateGrowth(Plot* plot)
 
     plot->daysSincePlanted++;
     checkIfReadyForHarvest(plot);
+    
+    printf("Growing %s for %d days.\n", plot->growingSeed->name, plot->daysSincePlanted);
 }
 
 int checkIfReadyForHarvest(Plot* plot)
@@ -51,37 +58,31 @@ int checkIfReadyForHarvest(Plot* plot)
     return 0;
 }
 
-int harvestCrops(Plot* plot, Crop* cropsList, size_t cropsListSize)
+void harvestCrops(Plot* plot, Crop* cropsList, size_t cropsListSize, int* playerMoney)
 {
     if (!checkIfReadyForHarvest(plot))
     {
-        printf("Not ready.\n");
+        printf("%s isn't done growing.\n", plot->growingSeed->name);
 
-        return 0;
+        return;
     }
 
     int income = 0;
     char* seedName = getSeedName(plot->growingSeed);
-    // size_t cropsListSize = sizeof(cropsList) / sizeof(cropsList[0]);
-    // This is unpossible
 
     for (int i = 0; i < cropsListSize; i++)
     {
         if (strcmp(cropsList[i].name, seedName) == 0)
         {
-            income = cropsList[i].sellingPrice * 30; 
-            // 30 can be changed to the harvest amount but idk
+            income = cropsList[i].sellingPrice * plot->growingSeed->baseHarvestAmount;
+            printf("TEST: I should get %d\n", cropsList[i].sellingPrice);
+            addToPlayerMoney(playerMoney, income);
+
             break;
         }
     }
 
-    // Initalize a temporary crop, put releveant crop 
-    // data based on similar seed name
-    // then return the current price of that crop * 30
-
     initPlot(plot);
 
     printf("Successful harvest!\n");
-
-    return income;
 }

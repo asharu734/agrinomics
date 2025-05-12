@@ -19,12 +19,12 @@ Plot;
 
 void initPlot(Plot* plot);
 
-void plantSeed(Plot* plot, Seed* plantedSeed);
+void plantSeed(Plot* plot, Seed* plantedSeed, int* playerMoney);
 
 void simulateGrowth(Plot* plot);
 
 int checkIfReadyForHarvest(Plot* plot);
 
-int harvestCrops(Plot* plot);
+void harvestCrops(Plot* plot, Crop* cropsList, size_t cropsListSize, int* playerMoney);
 
 #endif
