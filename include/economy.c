@@ -25,9 +25,11 @@ void randomizeCropSupplyAndDemand(Crop* crop)
     crop->demand = rand() % (max + 1 - min) + min;
 }
 
-void updateCropCurrentPrice(Crop* crop)
+void updateCropSellingPrice(Crop* crop)
 {
-    int newCurrentPrice = 
+    int newSellingPrice = 
     crop->basePrice 
     * calculateRatioFromSupplyAndDemand(crop->supply, crop->demand);
+
+    crop->sellingPrice = newSellingPrice;
 }

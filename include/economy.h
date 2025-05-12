@@ -14,6 +14,6 @@ float calculateRatioFromSupplyAndDemand(int supply, int demand);
 void randomizeCropSupplyAndDemand(Crop* crop);
 
 // Will be used in Crop array
-void updateCropMarketPrice(Crop* crop);
+void updateCropSellingPrice(Crop* crop);
 
 #endif
