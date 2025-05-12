@@ -1,4 +1,4 @@
-//compile instructions: gcc -o client testclient.c ../include/dialogue.c cJSON.c -Iinclude
+//compile instructions: gcc -o client testclient.c
 
 
 #include <stdio.h>
@@ -9,18 +9,218 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
-#include "../include/dialogue.h"
 
+#include "../include/dialogue.h"
+#include "../include/crops.h"
+#include "../include/seeds.h"
+#include "../include/economy.h"
+#include "../include/plot.h"
+#include "../include/loader.h"
+
+#include "../include/crops.c"
+#include "../include/seeds.c"
+#include "../include/economy.c"
+#include "../include/plot.c"
+#include "../include/loader.c"
+
+#define MAX_CROPS 100
+#define MAX_SEEDS 100
+#define MAX_PLOTS 6
+
+// Global simulation state
+int playerMoney = 1000;
+Crop cropArray[MAX_CROPS];
+Seed seedArray[MAX_SEEDS];
+Plot plotArray[MAX_PLOTS];
+int numCrops = 0, numSeeds = 0;
+int initialized = 0;
 
 void die_with_error(char *error_msg){
     printf("%s", error_msg);
     exit(-1);
 }
 
-void evaluate_and_execute(int id) {
-    //lagay ng if statements
+void send_economy_state(int client_sock) {
+    char message[1024] = "Economy State:\n";
+    char line[128];
+
+    for (int i = 0; i < numCrops; i++) {
+        snprintf(line, sizeof(line), "%s: %d Gendabloons\n", cropArray[i].name, cropArray[i].sellingPrice);
+        strncat(message, line, sizeof(message) - strlen(message) - 1);
+    }
+
+    int n = send(client_sock, message, strlen(message), 0);
+    if (n < 0) {
+        perror("Error: send() Failed (economy state)");
+    }
 }
 
+void display_plot_states() {
+    printf("\n--- Plot Status ---\n");
+    for (int i = 0; i < MAX_PLOTS; i++) {
+        printf("Plot %d: ", i + 1);
+        if (plotArray[i].hasSeed) {
+            printf("Growing %s (Planted for %d day(s))\n", 
+                   plotArray[i].growingSeed->name, 
+                   plotArray[i].daysSincePlanted);
+        } else {
+            printf("Empty\n");
+        }
+    }
+}
+
+void display_seed_shop() {
+    printf("\n--- Seed Shop ---\n");
+    for (int i = 0; i < numSeeds; i++) {
+        printf("%d) %s - %d Gendabloons (Grow Time: %d days, Harvest: %d crops)\n",
+               i + 1,
+               seedArray[i].name,
+               seedArray[i].basePrice,
+               seedArray[i].daysBeforeHarvest,
+               seedArray[i].baseHarvestAmount);
+    }
+    printf("------------------\n");
+}
+
+void simulate_growth_phase() {
+    for (int i = 0; i < MAX_PLOTS; i++) {
+        if (plotArray[i].hasSeed) {
+            // Simulate growth for this plot (only if it has a seed planted)
+            simulateGrowth(&plotArray[i]);
+
+            // Optionally, you can also handle random supply and demand for the crop
+            // For each plot, you might want to update its crop's selling price
+            randomizeCropSupplyAndDemand(&cropArray[0]); // You might want to adjust which crop here
+            updateCropSellingPrice(&cropArray[0]);
+        }
+    }
+}
+
+void farmer_actions(int id, int client_sock) {
+    if (!initialized) return;
+
+    int plotIndex;
+
+    switch(id) {
+        case 1: // Plant
+            display_plot_states();
+            printf("Enter plot index to plant (1–%d): ", MAX_PLOTS);
+            scanf("%d", &plotIndex);
+            plotIndex -= 1;
+            while (getchar() != '\n'); // clear input buffer
+        
+            if (plotIndex < 0 || plotIndex >= MAX_PLOTS) {
+                printf("Invalid plot index.\n");
+                break;
+            }
+        
+            if (plotArray[plotIndex].hasSeed) {
+                printf("This plot is already occupied.\n");
+                break;
+            }
+
+            display_seed_shop();
+            printf("Enter seed number to buy and plant: ");
+            int seedChoice;
+            scanf("%d", &seedChoice);
+            seedChoice -= 1;
+            while (getchar() != '\n'); // clear input buffer
+        
+            if (seedChoice < 0 || seedChoice >= numSeeds) {
+                printf("Invalid seed choice.\n");
+                break;
+            }
+        
+            if (playerMoney < seedArray[seedChoice].basePrice) {
+                printf("Not enough Gendabloons to buy %s.\n", seedArray[seedChoice].name);
+                break;
+            }
+        
+            playerMoney -= seedArray[seedChoice].basePrice;
+            plantSeed(&plotArray[plotIndex], &seedArray[seedChoice], &playerMoney);
+            printf("Planted %s in plot %d.\n", seedArray[seedChoice].name, plotIndex + 1);
+            break;
+
+        case 2: // Harvest
+            display_plot_states();
+            printf("Enter plot index to harvest (1–%d): ", MAX_PLOTS);
+            scanf("%d", &plotIndex);
+            plotIndex = plotIndex - 1;
+            while(getchar() != '\n'); // clear input buffer
+
+            if (plotIndex < 0 || plotIndex >= MAX_PLOTS) {
+                printf("Invalid plot index.\n");
+                break;
+            }
+
+            harvestCrops(&plotArray[plotIndex], cropArray, MAX_CROPS, &playerMoney);
+            break;
+
+        case 3:
+            printf("Gendabloons: %d\n", playerMoney);
+            break;
+
+        default:
+            printf("Unknown action ID: %d\n", id);
+            break;
+    }
+}
+
+void evaluate_and_execute(int id) {
+    switch (id) {
+        case 1: // Typhoon: Destroy plots
+            printf("[EVENT] Typhoon! All plots have been destroyed.\n");
+            for (int i = 0; i < MAX_PLOTS; i++) {
+                plotArray[i].growingSeed = NULL;
+                plotArray[i].daysSincePlanted = 0;
+                plotArray[i].hasSeed = 0;
+            }
+            break;
+
+        case 2: // Heat Index: Crop growth decreased by a day
+            printf("[EVENT] Heat Index! Crops grow slower (growth decreased by 1 day).\n");
+            for (int i = 0; i < MAX_PLOTS; i++) {
+                if (plotArray[i].hasSeed && plotArray[i].daysSincePlanted > 0) {
+                    plotArray[i].daysSincePlanted--;
+                }
+            }
+            break;
+
+        case 3: // Pandemic: Delay 3 turns
+            printf("[EVENT] Pandemic! You are forced to skip 3 turns.\n");
+            for (int i = 0; i < 3; i++) {
+                simulate_growth_phase();
+            }
+            break;
+
+        case 4: // Selling price decreased
+            printf("[EVENT] Market Crash! Selling prices have decreased.\n");
+            for (int i = 0; i < numCrops; i++) {
+                cropArray[i].sellingPrice = (int)(cropArray[i].sellingPrice * 0.75); // reduce by 25%
+            }
+            break;
+
+        case 5: // Seed price increased
+            printf("[EVENT] Seed Shortage! Seed prices have increased.\n");
+            for (int i = 0; i < numSeeds; i++) {
+                seedArray[i].basePrice = (int)(seedArray[i].basePrice * 1.5); // increase by 50%
+            }
+            break;
+
+        case 6: // Rain: Crop growth increased by 3 days
+            printf("[EVENT] Rainy Week! Crops grow faster (growth increased by 3 days).\n");
+            for (int i = 0; i < MAX_PLOTS; i++) {
+                if (plotArray[i].hasSeed) {
+                    plotArray[i].daysSincePlanted += 3;
+                }
+            }
+            break;
+
+        default:
+            printf("[EVENT] Unknown event ID: %d\n", id);
+            break;
+    }
+}
 
 int main(int argc,  char *argv[]){
     
@@ -33,6 +233,22 @@ int main(int argc,  char *argv[]){
         printf("Usage: %s hostname port_no",  argv[0]);
         exit(1);
     }
+
+    // Load crop & seed data
+    numSeeds = loadSeedsFromCSV("../data/cropsAndSeeds.csv", seedArray, MAX_SEEDS);
+    numCrops = loadCropsFromCSV("../data/cropsAndSeeds.csv", cropArray, MAX_CROPS);
+    if (numSeeds < 0 || numCrops < 0) {
+        printf("Failed to load seed/crop data.\n");
+        return 1;
+    }
+
+    // Init plots
+    for (int i = 0; i < MAX_PLOTS; i++) {
+        initPlot(&plotArray[i]);
+    }
+
+    initialized = 1; // Allow action_farmerd to run
+
 
     printf("Client starting ...\n");
     // Create a socket using TCP
@@ -63,15 +279,35 @@ int main(int argc,  char *argv[]){
 
     printf("Connection successful!\n");
 
-    // Communicate
-    while(1){
-        GameState state = run_game("../include/dialogue.json");
-        char* json_data = serialize_game_state(state);
+   int gameTurn = 0;
 
-        n = send(client_sock, json_data, strlen(json_data), 0);
-        free(json_data);
-        if (n < 0)
-            die_with_error("Error: send() Failed (game data)");
+    // Communicate
+    while(gameTurn < 120){
+        int endTurn = 0;
+        while (!endTurn) {
+            printf("\n--- Your Turn ---\n");
+            printf("Choose an action:\n");
+            printf("1 = Plant\n");
+            printf("2 = Harvest\n");
+            printf("3 = Show Gendabloons\n");
+            printf("0 = End Turn\n");
+            printf("Enter action ID: ");
+
+            bzero(buffer, 256);
+            fgets(buffer, 255, stdin);
+            int action_id = atoi(buffer);
+
+            if (action_id == 0) {
+                gameTurn = gameTurn + 1;
+
+                endTurn = 1;  // Exit inner loop to end turn
+            } else {
+                farmer_actions(action_id, client_sock);
+            }
+        }
+
+        // Now send the economy state to the server
+        send_economy_state(client_sock);
 
         bzero(buffer, 256);
         n = recv(client_sock, buffer, 255, 0);
@@ -79,12 +315,16 @@ int main(int argc,  char *argv[]){
             die_with_error("Error: recv() Failed (Chosen Card)");
         printf("[server] > %s", buffer);
 
+        simulate_growth_phase();
+
         int received_id = atoi(buffer);
         evaluate_and_execute(received_id);
     }
     
-
     close(client_sock);
     
+    for (int i = 0; i < numSeeds; i++) free(seedArray[i].name);
+    for (int i = 0; i < numCrops; i++) free(cropArray[i].name);
+
     return 0;
 }

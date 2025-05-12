@@ -14,6 +14,7 @@ typedef struct Plot
     Seed* growingSeed;
     int daysSincePlanted;
     int isReadyForHarvest;
+    int hasSeed; 
 }
 Plot;
 

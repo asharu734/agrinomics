@@ -15,6 +15,7 @@ void initPlot(Plot* plot)
     plot->growingSeed = NULL;
     plot->daysSincePlanted = 0;
     plot->isReadyForHarvest = 0;
+    plot->hasSeed = 0;
 }
 
 void plantSeed(Plot* plot, Seed* plantedSeed, int* playerMoney)
@@ -30,6 +31,7 @@ void plantSeed(Plot* plot, Seed* plantedSeed, int* playerMoney)
     plot->growingSeed = plantedSeed;
     plot->daysSincePlanted = 0;
     plot->isReadyForHarvest = 0;
+    plot->hasSeed = 1;
 }
 
 void simulateGrowth(Plot* plot)
