@@ -2,4 +2,7 @@ name,basePrice,daysBeforeHarvest,baseHarvestAmount
 Wheat,8,4,4
 Corn,12,7,5
 Potato,9,5,3
-Beans,5, 4, 6
+Beans,5,4,6
+Eggplant,15,8,4
+Beetroot,11,6,5
+Spaghetti,5,15,8
