@@ -10,7 +10,6 @@
 #include <netdb.h>
 #include <unistd.h>
 
-#include "../include/dialogue.h"
 #include "../include/crops.h"
 #include "../include/seeds.h"
 #include "../include/economy.h"
@@ -227,6 +226,8 @@ void evaluate_and_execute(int id) {
     }
 }
 
+#define WINNING_GOAL 10000 // Gendabloon goal
+
 int main(int argc,  char *argv[]){
     
     int client_sock,  port_no,  n;
@@ -308,6 +309,13 @@ int main(int argc,  char *argv[]){
                 endTurn = 1;  // Exit inner loop to end turn
             } else {
                 farmer_actions(action_id, client_sock);
+            }
+
+            if (playerMoney >= WINNING_GOAL) {
+                printf("\nCongratulations! You have reached %d Gendabloons and won the game!\n", WINNING_GOAL);
+                send(client_sock, "WIN", strlen("WIN"), 0); // Notify the server about the win
+                close(client_sock);
+                return 0;
             }
         }
 

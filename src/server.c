@@ -100,9 +100,13 @@ int main(int argc, char *argv[]){
     
         printf("Economy data received from client.\n");
     
+        if (strncmp(buffer, "WIN", 3) == 0) {
+            printf("The player has reached the goal of 10,000 Gendabloons! Game over.\n");
+            break;
+        }
+
         // Prepare PICK_SIZE card choices
         Card options[PICK_SIZE];
-        int cardIndex = 0;
     
         index = 0;
         for (int i = 0; i < CARD_TYPE_COUNT; i++) {
