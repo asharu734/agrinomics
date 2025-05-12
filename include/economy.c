@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "../include/crops.h"
 #include "../include/seeds.h"
@@ -13,4 +14,20 @@ float calculateRatioFromSupplyAndDemand(int supply, int demand)
     float priceRatio = (float)demand / (float)supply;
 
     return priceRatio;
+}
+
+void randomizeCropSupplyAndDemand(Crop* crop)
+{
+    int max = 100;
+    int min = 1;
+
+    crop->supply = rand() % (max + 1 - min) + min;
+    crop->demand = rand() % (max + 1 - min) + min;
+}
+
+void updateCropCurrentPrice(Crop* crop)
+{
+    int newCurrentPrice = 
+    crop->basePrice 
+    * calculateRatioFromSupplyAndDemand(crop->supply, crop->demand);
 }
