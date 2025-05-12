@@ -12,7 +12,8 @@
       "choices": [
         { "option": "Plant crops", "next": "plant" },
         { "option": "Harvest crops", "next": "harvest" },
-        { "option": "Check crops", "next": "check" }
+        { "option": "Check crops", "next": "check" },
+        { "option": "Buy crops", "next": "buy" }
       ]
     },
 
