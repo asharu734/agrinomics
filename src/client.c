@@ -39,21 +39,6 @@ void die_with_error(char *error_msg){
     exit(-1);
 }
 
-void send_economy_state(int client_sock) {
-    char message[1024] = "Economy State:\n";
-    char line[128];
-
-    for (int i = 0; i < numCrops; i++) {
-        snprintf(line, sizeof(line), "%s: %d Gendabloons\n", cropArray[i].name, cropArray[i].sellingPrice);
-        strncat(message, line, sizeof(message) - strlen(message) - 1);
-    }
-
-    int n = send(client_sock, message, strlen(message), 0);
-    if (n < 0) {
-        perror("Error: send() Failed (economy state)");
-    }
-}
-
 void display_plot_states() {
     printf("\n--- Plot Status ---\n");
     for (int i = 0; i < MAX_PLOTS; i++) {
@@ -318,9 +303,6 @@ int main(int argc,  char *argv[]){
                 return 0;
             }
         }
-
-        // Now send the economy state to the server
-        send_economy_state(client_sock);
 
         bzero(buffer, 256);
         n = recv(client_sock, buffer, 255, 0);

@@ -17,7 +17,7 @@ typedef struct {
 
 #define DECK_SIZE 12
 #define PICK_SIZE 3
-#define CARD_TYPE_COUNT 6 //dagdag nalang to, ito yung kung ilan unique cards meron
+#define CARD_TYPE_COUNT 6
 
 Card card_types[CARD_TYPE_COUNT] = {
     {1, "Typhoon: Destroy plots", 1},
@@ -26,7 +26,6 @@ Card card_types[CARD_TYPE_COUNT] = {
     {4, "Market Crash: Decrease selling price", 3},
     {5, "Seed Shortage: Increase seed prices", 3},
     {6, "Rain: Crop growth increased by 3 days", 1},
-    //dito nalang ilalagay yung cards na naisip na
 };
 
 void die_with_error(char *error_msg){
