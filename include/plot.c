@@ -64,8 +64,11 @@ void harvestCrops(Plot* plot, Crop* cropsList, size_t cropsListSize, int* player
 {
     if (!checkIfReadyForHarvest(plot))
     {
-        printf("%s isn't done growing.\n", plot->growingSeed->name);
-
+        if (plot->growingSeed == NULL) {
+            printf("This plot is empty! Nothing to harvest.\n");
+        } else {
+            printf("%s isn't done growing.\n", plot->growingSeed->name);
+        }
         return;
     }
 

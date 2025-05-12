@@ -88,10 +88,15 @@ void simulate_growth_phase() {
             // Simulate growth for this plot (only if it has a seed planted)
             simulateGrowth(&plotArray[i]);
 
-            // Optionally, you can also handle random supply and demand for the crop
-            // For each plot, you might want to update its crop's selling price
-            randomizeCropSupplyAndDemand(&cropArray[0]); // You might want to adjust which crop here
-            updateCropSellingPrice(&cropArray[0]);
+            // Apply supply and demand for the specific crop planted in this plot
+            // We are assuming the crop planted is linked to the plot, not just cropArray[0]
+            for (int j = 0; j < numCrops; j++) {
+                if (strcmp(plotArray[i].growingSeed->name, cropArray[j].name) == 0) {
+                    randomizeCropSupplyAndDemand(&cropArray[j]); // Adjust the crop based on this plot
+                    updateCropSellingPrice(&cropArray[j]);
+                    break;  // We found the matching crop, no need to check others
+                }
+            }
         }
     }
 }
@@ -298,7 +303,7 @@ int main(int argc,  char *argv[]){
             int action_id = atoi(buffer);
 
             if (action_id == 0) {
-                gameTurn = gameTurn + 1;
+                gameTurn++;
 
                 endTurn = 1;  // Exit inner loop to end turn
             } else {
@@ -319,6 +324,8 @@ int main(int argc,  char *argv[]){
 
         int received_id = atoi(buffer);
         evaluate_and_execute(received_id);
+
+        send(client_sock, "TURN_END", strlen("TURN_END"), 0);
     }
     
     close(client_sock);

@@ -91,68 +91,67 @@ int main(int argc, char *argv[]){
     int gameTurn = 0;
 
     // Communicate    
-    while(gameTurn < 120){
+    while (gameTurn < 120) {
+        // Wait for economy data (optional)
         bzero(buffer, 256);
         n = recv(client_sock, buffer, 255, 0);
-        if(n < 0){
-            die_with_error("Error: recv() Failed");
-        }
-
-        //
-        //Server interface process
-        //
-        for(int i = 0; i < CARD_TYPE_COUNT; i++){
-            for(int j = 0; j < card_types[i].count; j++){
-                deck[index].id = card_types[i].id;
-                strncpy(deck[index].name, card_types[i].name, sizeof(deck[index].name));
-                index++;
+        if (n < 0)
+            die_with_error("Error: recv() Failed (economy data)");
+    
+        printf("Economy data received from client.\n");
+    
+        // Prepare PICK_SIZE card choices
+        Card options[PICK_SIZE];
+        int cardIndex = 0;
+    
+        index = 0;
+        for (int i = 0; i < CARD_TYPE_COUNT; i++) {
+            for (int j = 0; j < card_types[i].count; j++) {
+                deck[index++] = card_types[i];
             }
         }
+    
         shuffle(deck, DECK_SIZE);
-        
-        printf("\n--- New Cycle Begins ---\n");
-
-    	for (int i = 0; i < DECK_SIZE; i += PICK_SIZE) {
-            printf("\nYour options:\n");
-        
-            for (int j = 0; j < PICK_SIZE && (i + j) < DECK_SIZE; j++) {
-                printf("%d: %s\n", j + 1, deck[i + j].name);
-            }
-        
-            int choice = 0;
-            while (choice < 1 || choice > PICK_SIZE || (i + choice - 1) >= DECK_SIZE) {
-                printf("Pick a card (1-%d): ", PICK_SIZE);
-                scanf("%d", &choice);
-            }
-        
-            Card chosen = deck[i + choice - 1];
-            printf("You picked Card %s!\n", chosen.name);
-        
-            // Send chosen card to the client
-            char card_msg[20];
-            snprintf(card_msg, sizeof(card_msg), "%d\n", chosen.id);
-            n = send(client_sock, card_msg, strlen(card_msg), 0);
-            if (n < 0) 
-                die_with_error("Error: send() Failed (card_msg).");
-
-                bzero(buffer, 256);
-            n = recv(client_sock, buffer, 255, 0);
-            if (n < 0) {
-                die_with_error("Error: recv() Failed (waiting for TURN_END)");
-            }
-
-            buffer[n] = '\0'; // Ensure null-terminated string
-
-            if (strncmp(buffer, "TURN_END", 8) == 0) {
-                printf("Client ended turn. Proceeding...\n");
-            } else {
-                printf("Unexpected message while waiting for TURN_END: %s\n", buffer);
-            }
-
-            gameTurn = gameTurn + 1;
-
-        }        
-    } 
+        for (int i = 0; i < PICK_SIZE; i++) {
+            options[i] = deck[i];
+        }
+    
+        printf("\nYour options:\n");
+        for (int i = 0; i < PICK_SIZE; i++) {
+            printf("%d: %s\n", i + 1, options[i].name);
+        }
+    
+        int choice = 0;
+        while (choice < 1 || choice > PICK_SIZE) {
+            printf("Pick a card (1-%d): ", PICK_SIZE);
+            scanf("%d", &choice);
+        }
+    
+        Card chosen = options[choice - 1];
+        printf("You picked: %s\n", chosen.name);
+    
+        // Send the card ID to the client
+        char card_msg[20];
+        snprintf(card_msg, sizeof(card_msg), "%d\n", chosen.id);
+        n = send(client_sock, card_msg, strlen(card_msg), 0);
+        if (n < 0)
+            die_with_error("Error: send() Failed (card_msg)");
+    
+        // Wait for TURN_END
+        bzero(buffer, 256);
+        n = recv(client_sock, buffer, 255, 0);
+        if (n < 0)
+            die_with_error("Error: recv() Failed (TURN_END)");
+    
+        buffer[n] = '\0';
+        if (strncmp(buffer, "TURN_END", 8) != 0) {
+            printf("Unexpected message while waiting for TURN_END: %s\n", buffer);
+        } else {
+            printf("Client ended turn. Proceeding...\n");
+        }
+    
+        gameTurn++;
+    }
 
     printf("Closing connection ...\n");
     close(client_sock);
