@@ -3,7 +3,6 @@
     "text": "You are at the farm. Its presence overlooks your house. A road leading to the marketplace snakes its way to the side.\n\nYou...\n",
     "choices": [
       { "option": "Take a look at the plot", "next": "look" },
-      { "option": "Visit the market", "next": "market" },
       { "option": "Go to bed", "next": "sleep" }
     ]
   },
@@ -13,9 +12,27 @@
       "choices": [
         { "option": "Plant crops", "next": "plant" },
         { "option": "Harvest crops", "next": "harvest" },
-        { "option": "Check crops", "next": "check" }
+        { "option": "Check crops", "next": "check" },
+        { "option": "Buy crops", "next": "buy" }
       ]
     },
+
+      "buy": {
+        "text": "Buy",
+        "choices": [
+          { "option": "Buy seeds", "next": "buyseeds" },
+          { "option": "Sell crops", "next": "sell" }
+        ]
+      },
+
+      "buyseeds": {
+        "text": "You go buy seeds. There are a couple of options you can buy.\n",
+        "show_money": true,
+        "choices": [
+          { "option": "Buy Seed1", "price": 10, "action": "buy", "next": "buyseeds1" },
+          { "option": "Go back", "next": "market2" }
+        ]
+      },
 
       "plant": {
         "text": "Plant",
@@ -29,40 +46,12 @@
         "text": "Check",
         "choices": []
       },
-  
-    "market": {
-      "text": "You visit the marketplace. It is filled with sellers and customers.",
-      "choices": [
-        { "option": "Buy seeds", "next": "buyseeds" },
-        { "option": "Sell crops", "next": "sell" }
-      ]
-    },
-    "market2": {
-      "text": "You go back to the familiar sight of sellers and customers. It hasn't changed since you last left.\n\nYou...\n",
-      "choices": [
-        { "option": "Buy seeds", "next": "buyseeds" },
-        { "option": "Sell crops", "next": "sell" }
-      ]
-    },
-
-      "buyseeds": {
-        "text": "You go to the seed section to buy seeds. There are a couple of options you can buy.\n",
-        "show_money": true,
-        "choices": [
-          { "option": "Buy Seed1", "price": 10, "action": "buy", "next": "buyseeds1" },
-          { "option": "Go back", "next": "market2" }
-        ]
-      },
-
-        "buyseeds1": {
-          "text": "You buy SEED1.",
-          "choices": [
-            { "option": "Go back", "next": "buyseeds" }
-          ]
-        },
 
   "sleep": {
     "text": "You fall asleep and never wake up. The end.",
-    "choices": []
+    "choices": [
+      { "option": "Take a look at the plot", "next": "look" },
+      { "option": "Go to bed", "next": "sleep" }
+    ]
   }
 }
