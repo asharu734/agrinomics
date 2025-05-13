@@ -156,6 +156,8 @@ int main(int argc, char *argv[]){
         gameTurn++;
     }
 
+    printf("Game Finish\n");
+    
     printf("Closing connection ...\n");
     close(client_sock);
     
