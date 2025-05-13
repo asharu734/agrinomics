@@ -317,6 +317,8 @@ int main(int argc,  char *argv[]){
 
         send(client_sock, "TURN_END", strlen("TURN_END"), 0);
     }
+
+    printf("Game Finish\n");
     
     close(client_sock);
     
