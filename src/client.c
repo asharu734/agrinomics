@@ -48,14 +48,14 @@ void display_plot_states() {
                printf("Growing %s (Planted for %d day) (%d%%)\n", 
                   plotArray[i].growingSeed->name, 
                   plotArray[i].daysSincePlanted,
-                  (plotArray[i].daysSincePlanted / seedArray[i].daysBeforeHarvest) * 100);//NEED TO BE FIXED ASAP
+                  (plotArray[i].daysSincePlanted / plotArray[i].daysBeforeHarvest) * 100);//NEED TO BE FIXED ASAP
             }
             else {
                 printf("Growing %s (Planted for %d days) %d (%d%%)\n", 
                    plotArray[i].growingSeed->name, 
                    plotArray[i].daysSincePlanted,
                    seedArray[i].daysBeforeHarvest,
-                   (plotArray[i].daysSincePlanted / seedArray[i].daysBeforeHarvest) * 100);
+                   (plotArray[i].daysSincePlanted / plotArray[i].daysBeforeHarvest) * 100);
             }
         } else {
             printf("Empty\n");
@@ -119,7 +119,7 @@ void farmer_actions(int id, int client_sock) {
             }
 
             display_seed_shop();
-            printf("Cuurent Gendabloons: %d\n", playerMoney)
+            printf("Cuurent Gendabloons: %d\n", playerMoney);
             printf("Enter seed number to buy and plant: ");
             int seedChoice;
             scanf("%d", &seedChoice);
