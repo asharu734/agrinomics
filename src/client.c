@@ -48,14 +48,14 @@ void display_plot_states() {
                printf("Growing %s (Planted for %d day) (%d%%)\n", 
                   plotArray[i].growingSeed->name, 
                   plotArray[i].daysSincePlanted,
-                  (plotArray[i].daysSincePlanted / plotArray[i].daysBeforeHarvest) * 100);//NEED TO BE FIXED ASAP
+                  (plotArray[i].daysSincePlanted / plotArray[i].growingSeed->daysBeforeHarvest) * 100);//NEED TO BE FIXED ASAP
             }
             else {
                 printf("Growing %s (Planted for %d days) %d (%d%%)\n", 
                    plotArray[i].growingSeed->name, 
                    plotArray[i].daysSincePlanted,
                    seedArray[i].daysBeforeHarvest,
-                   (plotArray[i].daysSincePlanted / plotArray[i].daysBeforeHarvest) * 100);
+                   (plotArray[i].daysSincePlanted / plotArray[i].growingSeed->daysBeforeHarvest) * 100);
             }
         } else {
             printf("Empty\n");
