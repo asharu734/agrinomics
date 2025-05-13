@@ -42,20 +42,20 @@ void die_with_error(char *error_msg){
 void display_plot_states() {
     printf("\n--- Plot Status ---\n");
     for (int i = 0; i < MAX_PLOTS; i++) {
+        int percent = ((float)plotArray[i].daysSincePlanted / plotArray[i].growingSeed->daysBeforeHarvest) * 100;
         printf("Plot %d: ", i + 1);
         if (plotArray[i].hasSeed) {
             if (plotArray[i].daysSincePlanted == 1){
                printf("Growing %s (Planted for %d day) (%d%%)\n", 
                   plotArray[i].growingSeed->name, 
                   plotArray[i].daysSincePlanted,
-                  (plotArray[i].daysSincePlanted / plotArray[i].growingSeed->daysBeforeHarvest) * 100);//NEED TO BE FIXED ASAP
+                  percent);
             }
             else {
-                printf("Growing %s (Planted for %d days) %d (%d%%)\n", 
+                printf("Growing %s (Planted for %d days) (%d%%)\n", 
                    plotArray[i].growingSeed->name, 
                    plotArray[i].daysSincePlanted,
-                   seedArray[i].daysBeforeHarvest,
-                   (plotArray[i].daysSincePlanted / plotArray[i].growingSeed->daysBeforeHarvest) * 100);
+                   percent);
             }
         } else {
             printf("Empty\n");
