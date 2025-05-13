@@ -119,6 +119,7 @@ void farmer_actions(int id, int client_sock) {
             }
 
             display_seed_shop();
+            printf("Cuurent Gendabloons: %d\n", playerMoney)
             printf("Enter seed number to buy and plant: ");
             int seedChoice;
             scanf("%d", &seedChoice);
