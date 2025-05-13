@@ -80,7 +80,6 @@ void harvestCrops(Plot* plot, Crop* cropsList, size_t cropsListSize, int* player
         if (strcmp(cropsList[i].name, seedName) == 0)
         {
             income = cropsList[i].sellingPrice * plot->growingSeed->baseHarvestAmount;
-            printf("TEST: I should get %d\n", cropsList[i].sellingPrice);
             addToPlayerMoney(playerMoney, income);
 
             break;

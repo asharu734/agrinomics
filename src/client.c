@@ -1,4 +1,4 @@
-//compile instructions: gcc -o client testclient.c
+//compile instructions: gcc -o client client.c
 
 
 #include <stdio.h>
@@ -44,9 +44,19 @@ void display_plot_states() {
     for (int i = 0; i < MAX_PLOTS; i++) {
         printf("Plot %d: ", i + 1);
         if (plotArray[i].hasSeed) {
-            printf("Growing %s (Planted for %d day(s))\n", 
+            if (plotArray[i].daysSincePlanted == 1){
+               printf("Growing %s (Planted for %d day) (%d%%)\n", 
+                  plotArray[i].growingSeed->name, 
+                  plotArray[i].daysSincePlanted,
+                  (plotArray[i].daysSincePlanted / seedArray[i].daysBeforeHarvest) * 100);//NEED TO BE FIXED ASAP
+            }
+            else {
+                printf("Growing %s (Planted for %d days) %d (%d%%)\n", 
                    plotArray[i].growingSeed->name, 
-                   plotArray[i].daysSincePlanted);
+                   plotArray[i].daysSincePlanted,
+                   seedArray[i].daysBeforeHarvest,
+                   (plotArray[i].daysSincePlanted / seedArray[i].daysBeforeHarvest) * 100);
+            }
         } else {
             printf("Empty\n");
         }
