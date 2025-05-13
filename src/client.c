@@ -290,7 +290,7 @@ int main(int argc,  char *argv[]){
 
             if (action_id == 0) {
                 gameTurn++;
-
+                n = send(client_sock, "TURN_END", strlen("TURN_END"), 0);
                 endTurn = 1;  // Exit inner loop to end turn
             } else {
                 farmer_actions(action_id, client_sock);
